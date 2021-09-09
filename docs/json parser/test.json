@@ -1,0 +1,4 @@
+{
+    "Testing": ["12", 12, 12.3, true, false, null],
+    "Json": "Parsea"
+}
