@@ -15,7 +15,7 @@ class Parser(Parsea):
     def parseAlpha(self, string: str):
         self.init(string)
         alpha = self.while_strings(self.in_range("a","z")+self.in_range("A","Z"))
-        return alpha if alpha else None
+        return alpha or None
 
 p = Parser()
 
