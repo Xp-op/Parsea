@@ -1,5 +1,5 @@
 import re
-from typing import Iterable, Union
+from typing import Callable, Iterable, Union
 
 
 class Parsea:
@@ -40,6 +40,7 @@ class Parsea:
         self.source, self.len_s = string, len(string)
         self.pos, self.char = -1, None
         self.old_pos = -1
+        self._ = ""
         self.advance()
 
     def advance(self, step: int = 1):
@@ -51,6 +52,7 @@ class Parsea:
             self.char = None if self.pos >= self.len_s else self.source[self.pos]
             if self.char is None:
                 break
+        self._ = c
         return c
 
     def advance_until(self, lamb):
@@ -85,6 +87,12 @@ class Parsea:
         self.check_ignore()
         return self.slice_s(end=len(string), start=start) == string
 
+    def is_char(self, char: Union[str, Callable]):
+        self.check_ignore()
+        if isinstance(char, Callable):
+            return char(self.char)
+        return (self.char == char) if not len(char) > 1 else (self.char in char)
+    
     def match_re(self, pattern: str, start: int = 0) -> Union[re.Match, bool]:
         self.check_ignore()
         if pattern not in self._re_cache:
@@ -92,13 +100,17 @@ class Parsea:
         return self._re_cache[pattern].match(self.source, self.pos+start) or False
 
     def maybe_str(self, string: str):
-        self.check_ignore()
         if not self.match_str(string):
             return False
         return self.advance(step=len(string))
 
+    def maybe_strings(self, *strings: str):
+        for s in strings:
+            if self.maybe_str(s):
+                return self._
+        return False
+    
     def maybe_re(self, pattern: str, raw: bool=True):
-        self.check_ignore()
         m = self.match_re(pattern)
         if m:
             text = self.advance(m.end()-self.pos)
