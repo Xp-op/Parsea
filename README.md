@@ -1,6 +1,8 @@
 # Parsea
 Simple Scannerless Parser library for Python
 
+also can be used for scanning/lexing string
+
 ## Usage
 ```py
 from Parsea import Parsea
